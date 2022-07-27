@@ -11,7 +11,6 @@ const Dashboard = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const decoded = jwt_decode(token);
-    console.log(decoded);
     setAccountType(decoded.accountType);
   }, []);
 
