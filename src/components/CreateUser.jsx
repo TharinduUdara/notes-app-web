@@ -29,7 +29,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
-const numberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/;
+const numberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\\./0-9]*$/;
 
 const CreateUser = () => {
   const [open, setOpen] = useState(false);

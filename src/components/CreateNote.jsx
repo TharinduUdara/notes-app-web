@@ -27,21 +27,25 @@ import axios from "axios";
 import NoteIcon from "@mui/icons-material/Note";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const CreateNote = () => {
   const [open, setOpen] = useState(false);
+  const [viewingNote, setViewingNote] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingNotes, setEditingNotes] = useState(null);
 
   const [allNotes, setAllNotes] = useState([]);
 
   const [title, setTitle] = useState("");
-  // const [hasTitleError, setTitleError] = useState("");
 
   const [description, setDescription] = useState("");
-  // const [hasDescriptionError, setDescriptionError] = useState("");
 
   const [snackBarData, setSnackbarData] = useState(null);
+
+  const handleOnCloseView = () => {
+    setViewingNote(null);
+  };
 
   const getAllNotes = () => {
     setLoading(true);
@@ -158,6 +162,10 @@ const CreateNote = () => {
     setOpen(true);
   };
 
+  const handleOnView = (notes) => {
+    setViewingNote(notes);
+  };
+
   const renderNotes = () => {
     return allNotes.map((notes) => {
       return (
@@ -165,6 +173,15 @@ const CreateNote = () => {
           key={notes._id}
           secondaryAction={
             <Box>
+              <IconButton
+                edge="end"
+                aria-label="edit"
+                onClick={() => {
+                  handleOnView(notes);
+                }}
+              >
+                <VisibilityIcon />
+              </IconButton>
               <IconButton
                 edge="end"
                 aria-label="edit"
@@ -247,9 +264,7 @@ const CreateNote = () => {
             component="h3"
             gutterBottom
             sx={{ fontWeight: 600 }}
-          >
-            Create User
-          </Typography>
+          ></Typography>
 
           <TextField
             onChange={handleOnChangeTitle}
@@ -289,6 +304,27 @@ const CreateNote = () => {
             variant="contained"
           >
             {editingNotes ? "Update" : "Create"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={viewingNote ? true : false} onClose={handleOnCloseView}>
+        <DialogTitle>{viewingNote ? viewingNote.title : ""}</DialogTitle>
+        <DialogContent sx={{ minHeight: "40vh", width: "400px" }}>
+          <Typography
+            variant="body1"
+            component="p"
+            gutterBottom
+            sx={{
+              wordBreak: "break-word",
+            }}
+          >
+            {viewingNote ? viewingNote.description : ""}
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={handleOnCloseView} variant="contained">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

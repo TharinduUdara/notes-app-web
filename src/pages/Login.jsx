@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import jwt_decode from "jwt-decode";
 
 const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
@@ -31,7 +32,12 @@ const Login = () => {
       .post("http://localhost:3200/auth/login", body)
       .then((response) => {
         localStorage.setItem("token", response.data.data);
-        navigate("/", { replace: true });
+        const decoded = jwt_decode(response.data.data);
+        if (decoded.status === true) {
+          navigate("/", { replace: true });
+        } else {
+          navigate("/password-reset", { replace: true });
+        }
       })
       .catch(() => {
         setSnackbarOpen(true);
@@ -55,7 +61,7 @@ const Login = () => {
 
   return (
     <Box>
-      <Header disableLogout={true}/>
+      <Header disableLogout={true} />
       <Container
         sx={{
           display: "flex",

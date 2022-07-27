@@ -1,10 +1,14 @@
 import { Button, Card, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const PasswordReset = () => {
-  
-  const [setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [password, setPassword] = useState("");
   const [hasPasswordError, setPasswordError] = useState(false);
@@ -22,7 +26,28 @@ const PasswordReset = () => {
   const handleOnChangeConfirmPassword = (event) => {
     setConfirmPassword(event.target.value);
   };
- 
+
+  const handleOnSubmit = () => {
+    if (password === confirmPassword) {
+      const token = localStorage.getItem("token");
+    const decoded = jwt_decode(token);
+      const body = {
+        password: password,
+        _id: decoded.id
+      };
+      axios
+        .post("http://localhost:3200/auth/reset", body)
+        .then(() => {
+          navigate("/", { replace: true });
+        })
+        .catch(() => {
+          // snackbar something went wrong
+        });
+    } else {
+      // snackbar passwords are not equal
+    }
+  };
+
   return (
     <Container
       sx={{
@@ -40,15 +65,15 @@ const PasswordReset = () => {
         }}
       >
         <Typography
-          variant="h3"
-          component="h3"
+          variant="h4"
+          component="h4"
           gutterBottom
-          sx={{ fontWeight: 600 }}
+          sx={{ fontWeight: 600, mb: 2 }}
         >
-           Reset Password
+          Reset Password
         </Typography>
 
-          <TextField
+        <TextField
           error={hasPasswordError}
           onChange={handleOnChangePassword}
           sx={{
@@ -69,16 +94,14 @@ const PasswordReset = () => {
         />
 
         <Button
-          disabled={
-            !password ||  hasPasswordError
-          }
-          onClick={handleOnChangeConfirmPassword}
+          disabled={!password || hasPasswordError}
+          onClick={handleOnSubmit}
           sx={{
             minWidth: "400px",
           }}
           variant="contained"
         >
-          Update
+          Submit
         </Button>
       </Card>
     </Container>
