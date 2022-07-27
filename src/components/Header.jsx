@@ -1,7 +1,15 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Header = () => {
+const Header = (props) => {
+  const navigate = useNavigate();
+
+  const handleOnLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
+
   return (
     <AppBar component="nav">
       <Toolbar>
@@ -13,7 +21,11 @@ const Header = () => {
           NotesApp
         </Typography>
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <Button sx={{ color: "#fff" }}>Logout</Button>
+          {props.disableLogout ? null : (
+            <Button sx={{ color: "#fff" }} onClick={handleOnLogout}>
+              Logout
+            </Button>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

@@ -1,16 +1,41 @@
-import { TextField, Card, Container, Button } from "@mui/material";
+import {
+  TextField,
+  Card,
+  Container,
+  Button,
+  Snackbar,
+  Alert,
+  Box,
+} from "@mui/material";
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
 
 const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [hasError, setError] = useState(false);
-
   const [password, setPassword] = useState("");
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleOnLogin = () => {
-    // TODO: send email and the password to the apis
+    const body = {
+      email: email,
+      password: password,
+    };
+    axios
+      .post("http://localhost:3200/auth/login", body)
+      .then((response) => {
+        localStorage.setItem("token", response.data.data);
+        navigate("/", { replace: true });
+      })
+      .catch(() => {
+        setSnackbarOpen(true);
+      });
   };
 
   const handleOnChangeEmail = (event) => {
@@ -29,52 +54,71 @@ const Login = () => {
   };
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Card
+    <Box>
+      <Header disableLogout={true}/>
+      <Container
         sx={{
-          p: 4,
           display: "flex",
-          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       >
-        <TextField
-          error={hasError}
-          onChange={handleOnChangeEmail}
+        <Card
           sx={{
-            minWidth: "400px",
-            mb: 2,
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
           }}
-          label="Email"
-          variant="outlined"
-        />
-        <TextField
-          onChange={handleOnChangePassword}
-          sx={{
-            minWidth: "400px",
-            mb: 2,
-          }}
-          label="Password"
-          variant="outlined"
-        />
-        <Button
-          disabled={!email || !password || hasError}
-          onClick={handleOnLogin}
-          sx={{
-            minWidth: "400px",
-          }}
-          variant="contained"
         >
-          Login
-        </Button>
-      </Card>
-    </Container>
+          <TextField
+            error={hasError}
+            onChange={handleOnChangeEmail}
+            sx={{
+              minWidth: "400px",
+              mb: 2,
+            }}
+            label="Email"
+            variant="outlined"
+          />
+          <TextField
+            onChange={handleOnChangePassword}
+            sx={{
+              minWidth: "400px",
+              mb: 2,
+            }}
+            label="Password"
+            variant="outlined"
+          />
+          <Button
+            disabled={!email || !password || hasError}
+            onClick={handleOnLogin}
+            sx={{
+              minWidth: "400px",
+            }}
+            variant="contained"
+          >
+            Login
+          </Button>
+        </Card>
+        <Snackbar
+          open={isSnackbarOpen}
+          anchorOrigin={{
+            horizontal: "center",
+            vertical: "bottom",
+          }}
+          autoHideDuration={5000}
+          variant="filled"
+          onClose={() => {
+            setSnackbarOpen(false);
+          }}
+        >
+          <Alert severity="error" sx={{ width: "100%" }}>
+            Invalid credentials!
+          </Alert>
+        </Snackbar>
+      </Container>
+    </Box>
   );
 };
 
