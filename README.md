@@ -1,9 +1,7 @@
 # Getting Started NotesApp 
-## `Setup Stape `
-iCrate a Folder and import the Project form the GItHub (use this link ) 
+## Instruction to run the aplication
 
-instale the nmp 
+1. Run `npm install` 
+2. Run `npm start` to start the frontend
 
-Instale the Mongo DB Compass  
-
-Run Both  Notes-App-Web and Notes-App- API .    
+- Follow the instructons on the frontend project to start the frontend
