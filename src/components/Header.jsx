@@ -1,12 +1,15 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Header = (props) => {
   const navigate = useNavigate();
 
   const handleOnLogout = () => {
     localStorage.removeItem("token");
+    axios.defaults.headers.common["Authorization"] = null
+
     navigate("/login", { replace: true });
   };
 

@@ -32,6 +32,8 @@ const Login = () => {
       .post("http://localhost:3200/auth/login", body)
       .then((response) => {
         localStorage.setItem("token", response.data.data);
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + response.data.data;
         const decoded = jwt_decode(response.data.data);
         if (decoded.status === true) {
           navigate("/", { replace: true });
@@ -95,6 +97,7 @@ const Login = () => {
             }}
             label="Password"
             variant="outlined"
+            type="password"
           />
           <Button
             disabled={!email || !password || hasError}
